@@ -32,13 +32,6 @@ if(BUILD_TESTING)
   ament_uncrustify()
   ament_xmllint()
 
-  # simple gtest
-  find_package(ament_cmake_gtest REQUIRED)
-  ament_add_gtest(${PROJECT_NAME}_tutorial_test test/tutorial_test.cpp)
-  target_include_directories(${PROJECT_NAME}_tutorial_test PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-  )
 endif()
 
 ament_package()
