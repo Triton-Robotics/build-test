@@ -1,20 +1,23 @@
-name: ROS2 CI (Humble)
+name: Lint and Format
 on:
   pull_request:
     branches: [ main ]
 
 jobs:
-  build_and_test_ros2:
-    runs-on: ubuntu-22.04
-    container:
-      image: rostooling/setup-ros-docker:ubuntu-jammy-ros-humble-ros-base-latest
+  lint:
+    name: cppcheck-test
+    runs-on: ubuntu-latest
     steps:
-      - name: Build package
-        uses: ros-tooling/setup-ros@v0.7
+      - uses: actions/checkout@v2
+          
+      - name: cppcheck
+        uses: deep5050/cppcheck-action@main
         with:
-          required-ros-distributions: humble
-      - name: Run tests
-        run: |
-          source /opt/ros/humble/setup.bash
-          colcon test
-          colcon test-result --verbose --all
+          github_token: ${{ secrets.GITHUB_TOKEN}}
+          
+        
+      - name: publish report    
+        uses: mikeal/publish-to-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: 'main' # your branch name goes here

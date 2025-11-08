@@ -13,3 +13,17 @@ https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows
 Commands
 colcon test
 colcon test-result --verbose --all
+
+find_package(ament_cmake_cppcheck REQUIRED)
+find_package(ament_cmake_lint_cmake REQUIRED)
+find_package(ament_cmake_flake8 REQUIRED)
+find_package(ament_cmake_pep257 REQUIRED)
+find_package(ament_cmake_uncrustify REQUIRED)
+find_package(ament_cmake_xmllint REQUIRED)
+
+ament_cppcheck()
+ament_lint_cmake()
+ament_flake8()
+ament_pep257()
+ament_uncrustify()
+ament_xmllint()
