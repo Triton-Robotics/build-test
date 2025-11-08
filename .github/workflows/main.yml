@@ -9,6 +9,6 @@ jobs:
     name: Check C++ Style
     steps:
     - name: Checkout this commit
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2
     - name: Run style checks
       uses: coleaeason/actions-uncrustify@v1
