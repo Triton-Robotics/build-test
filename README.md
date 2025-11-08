@@ -27,3 +27,11 @@ ament_flake8()
 ament_pep257()
 ament_uncrustify()
 ament_xmllint()
+
+
+The issue:
+I need to run colcon build in order to run colcon test, which makes it hard to test submodules individually. 
+
+If I separate and directly use linters or formatters, they might not have the same configs as what ROS will use. Not too huge an issue
+
+Just make sure colcon build works I guess
