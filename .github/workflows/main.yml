@@ -7,10 +7,55 @@ jobs:
   build_and_test_ros2:
     runs-on: ubuntu-22.04
     container:
-      image: rostooling/setup-ros-docker:ubuntu-jammy-ros-humble-ros-base-latest
+      image: ros:humble-ros-base
+    
     steps:
-      - name: Build and run tests
-        uses: ros-tooling/action-ros-ci@v0.4
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
-          package-name: build_test
-          target-ros2-distro: humble
+          submodules: recursive
+      
+      - name: Set up Python virtual environment
+        shell: bash
+        run: |
+          # Install python3-venv if not available
+          apt-get update
+          apt-get install -y python3-venv python3-pip
+          
+          # Create virtual environment
+          python3 -m venv .venv
+          
+          # Activate and install dependencies
+          source .venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements/requirements.txt
+      
+      - name: Install rosdep dependencies
+        run: |
+          # Update rosdep
+          apt-get update
+          rosdep update
+          
+          # Install dependencies from all packages in src/
+          rosdep install --from-paths src --ignore-src -r -y
+      
+      - name: Build with colcon
+        shell: bash
+        run: |
+          # Activate venv and source ROS2 environment
+          source .venv/bin/activate
+          source /opt/ros/humble/setup.bash
+          
+          # Build the workspace
+          colcon build --symlink-install
+      
+      - name: Run tests
+        shell: bash
+        run: |
+          # Activate venv and source ROS2 and workspace environment
+          source .venv/bin/activate
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          
+          # Make sure build works
+          colcon build --packages-select utils aiming_node ballistics_node classical_cv
