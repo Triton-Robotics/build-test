@@ -1,14 +1,42 @@
-name: cppcheck-action-test
+name: ROS2 CI (Humble)
 on:
   pull_request:
     branches: [ main ]
 
 jobs:
-  cpp_style_check:
-    runs-on: ubuntu-latest
-    name: Check C++ Style
+  build_and_test_ros2:
+    runs-on: ubuntu-22.04
+    container:
+      image: ros:humble-ros-base
+    
     steps:
-    - name: Checkout this commit
-      uses: actions/checkout@v2
-    - name: Run style checks
-      uses: coleaeason/actions-uncrustify@v1
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      
+      - name: Install rosdep dependencies
+        run: |
+          # Update rosdep
+          apt-get update
+          rosdep update
+          
+          # Install dependencies from all packages in src/
+          rosdep install --from-paths src --ignore-src -r -y
+      
+      - name: Build with colcon
+        run: |
+          # Source ROS2 environment
+          source /opt/ros/humble/setup.bash
+          
+          # Build the workspace
+          colcon build --symlink-install
+      
+      - name: Run tests
+        run: |
+          # Source ROS2 and workspace environment
+          source /opt/ros/humble/setup.bash
+          source install/setup.bash
+          
+          # Make sure build works
+          colcon build
