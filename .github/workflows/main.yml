@@ -25,6 +25,7 @@ jobs:
           rosdep install --from-paths src --ignore-src -r -y
       
       - name: Build with colcon
+        shell: bash
         run: |
           # Source ROS2 environment
           source /opt/ros/humble/setup.bash
@@ -33,6 +34,7 @@ jobs:
           colcon build --symlink-install
       
       - name: Run tests
+        shell: bash
         run: |
           # Source ROS2 and workspace environment
           source /opt/ros/humble/setup.bash
